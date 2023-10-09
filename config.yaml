@@ -1,0 +1,11 @@
+mp:
+  path: 'D:\CZY\TASK_JSON_AUSU_1'
+  mongo:
+    database: MaterialProject
+    collection: [BandStructure, StaticCalculation, GeometryOptimization, DensityOfStates, DielectricProperties]
+    host: localhost
+    port: 27017
+  batch: 1
+  user: b
+
+
