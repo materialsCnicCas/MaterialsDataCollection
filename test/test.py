@@ -18,5 +18,5 @@ def VaspRunTest():
 
 
 if __name__ == '__main__':
-    # VaspRunTest()
-    oqmdRun(True)
+    VaspRunTest()
+    # oqmdRun(True)

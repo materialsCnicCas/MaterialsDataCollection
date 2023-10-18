@@ -143,11 +143,10 @@ class VaspParser(FileParser):
         parameters = self.findPara(para_list)
         if parameters['IBRION'] == 1 or parameters['IBRION'] == 2 or parameters['IBRION'] == 3:
             return CalType.GeometryOptimization
+        if parameters['IBRION'] == -1 and linecache.getline(self.kPointPath, 3).lower().startswith('l'):    # kpoints generation para
+            return CalType.BandStructure
         if parameters['IBRION'] == -1 and parameters['LORBIT']:
             return CalType.DensityOfStates
-        if parameters['IBRION'] == -1 and linecache.getline(self.kPointPath,
-                                                            3).lower() == 'l':  # kpoints generation para
-            return CalType.BandStructure
         if parameters['IBRION'] == -1:
             return CalType.StaticCalculation
         if (parameters['IBRION'] == 5 or parameters['IBRION'] == 6) and parameters['ISIF'] >= 3:
@@ -234,7 +233,7 @@ class VaspParser(FileParser):
             child = self.root.find("./structure[@name='initialpos']/varray")
             forces = [None for _ in range(len(specs))]
         else:
-            force_child = self.root.find("./calculation[last()]/varry[@name='forces']")
+            force_child = self.root.find("./calculation[last()]/varray[@name='forces']")
             for force in force_child:
                 forces.append([float(x) for x in force.text.split()])
 
@@ -733,8 +732,8 @@ class VaspParser(FileParser):
             EigenvalEnergyData = np.array(data).transpose()
             EigenvalEnergyOcc = np.array(occ).transpose()
 
-            EigenvalData[spin] = EigenvalEnergyData
-            EigenvalOcc[spin] = EigenvalEnergyOcc
+            EigenvalData[spin] = EigenvalEnergyData.tolist()
+            EigenvalOcc[spin] = EigenvalEnergyOcc.tolist()
 
             if spin == Spin.down:
                 IsSpinPolarized = True
@@ -966,7 +965,8 @@ class VaspParser(FileParser):
             "DecomposedLength": DecomposedLength,
             "IsLmDecomposed": IsLmDecomposed,
             "KPoints": KPoints,
-            "Data": Data
+            # "Data": Data
+            "Data": None
         }
 
     def getDielectricData(self):

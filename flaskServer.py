@@ -60,6 +60,7 @@ def query():
     return jsonify({'error': 0, 'message': 'success', 'data': responseData})
     # return 'QUERY'
 
+
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=8888)  #
 # flask默认是没有开启debug模式的，开启debug模式，可以帮助我们查找代码里面的错误

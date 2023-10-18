@@ -19,7 +19,7 @@ def vaspToBson(filePath, collections, user_id, group_id):
     incarPath = os.path.join(filePath, 'INCAR')
     outcarPath = os.path.join(filePath, 'OUTCAR')
     oszicarPath = os.path.join(filePath, 'OSZICAR')
-    kpointPath = os.path.join(filePath, 'KPOINT')
+    kpointPath = os.path.join(filePath, 'KPOINTS')
 
     vaspParser = VaspParser(vaspPath, incarPath, outcarPath, kpointPath, oszicarPath)
     calType = vaspParser.getCalculationType()

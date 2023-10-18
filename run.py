@@ -19,11 +19,11 @@ def getArgument():
     args = parser.parse_args()
     return args
 
+
 if __name__ == '__main__':
     args = getArgument()
     if args.source == 'vasp':
         vaspRun(filePath=args.root_dir, log=args.log)
-
     if args.source == 'icsd':
         # icsd 解析
         cifFileParserRun(filePath=args.root_dir, log=args.log)

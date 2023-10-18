@@ -3,6 +3,7 @@ import os
 import sys
 import time
 
+from bson import json_util
 from tqdm import tqdm
 
 from dao.toMongo import to_mongo
@@ -184,7 +185,7 @@ def vaspRun(filePath, log):
     user_id, group_id = getUserAndGroup(host, port, user, group)
     error_files = {'no_take': [], 'error': []}
     if log:
-        outFile = open(r'D:\CZY\DataCollectionSoftware\log/' + database + '_' + user + '_' + group + '_' + s + '.txt', 'w', encoding='utf8')
+        outFile = open(os.path.join(r'D:\CZY\DataCollectionSoftware\log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
     else:
         outFile = sys.stdout
 
@@ -194,23 +195,29 @@ def vaspRun(filePath, log):
             if doc is None:
                 error_files['no_take'].append(file)
                 continue
+            # with open('bson.json', 'w',encoding='utf8') as tfp:
+            #     tfp.write(json_util.dumps(doc, indent=2))
+            #     tfp.close()
             # if doc['CalculationType'] in collections:
             to_mongo(doc, database, doc['CalculationType'], host, port)
             # print('to mongo')
         except ValueError as e:
             print(file, ' ', e, file=outFile)
+            print(file, ' ', e)
             error_files['error'].append(file)
             continue
         except KeyError as e:
             print(file, ' ', e, file=outFile)
+            print(file, ' ', e)
             error_files['error'].append(file)
             continue
         except Exception as e:
             error_files['error'].append(file)
+            print(file, ' ', e)
             print(file, ' ', e, file=outFile)
             continue
-
-    with open(r'D:\CZY\DataCollectionSoftware\extractResult/task_json_' + user + '_' + group + '.json', 'w') as fp:
+    outFile.close()
+    with open(r'D:\CZY\DataCollectionSoftware\extractResult\task_json_' + user + '_' + group + '_' + s + '.json', 'w') as fp:
         fp.write(json.dumps(error_files, indent=2))
         fp.close()
     print('Extraction Task Over!')
