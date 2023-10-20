@@ -62,7 +62,7 @@ def query():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=8888)  #
+    app.run(debug=True, host='127.0.0.1', port=8000)  #
 # flask默认是没有开启debug模式的，开启debug模式，可以帮助我们查找代码里面的错误
 # host = '127.0.0.1' 表示设置的ip，如果需要连接手机等设备，可以将手机和电脑连接同一个热点，将host设置成对应的ip
 # port 为端口号，可自行设置

@@ -966,7 +966,7 @@ class VaspParser(FileParser):
             "IsLmDecomposed": IsLmDecomposed,
             "KPoints": KPoints,
             # "Data": Data
-            "Data": None
+            "Data": {}
         }
 
     def getDielectricData(self):

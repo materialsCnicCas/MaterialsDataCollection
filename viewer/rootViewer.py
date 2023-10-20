@@ -132,11 +132,11 @@ def oqmdRun(log):
     print('host & port：', host, ' ', port)
     user_id, group_id = getUserAndGroup(host, port, user, group)
     if log:
-        outFile = open(r'D:\CZY\DataCollectionSoftware\log/' + database + user + '_' + group + '_' + s + '.txt', 'w', encoding='utf8')
+        outFile = open(os.path.join(r'.\log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
     else:
         outFile = sys.stdout
     error_ids = oqmdMain(database, collections, host, port, user_id, group_id, outFile)
-    with open(r'D:\CZY\DataCollectionSoftware\extractResult/task_json_' + user + '_' + group + '.json', 'w') as fp:
+    with open(r'.\extractResult/task_json_' + user + '_' + group + '.json', 'w') as fp:
         fp.write(json.dumps({'error_ids': error_ids}, indent=2))
         fp.close()
     print('Extraction Task Over!')
@@ -185,7 +185,7 @@ def vaspRun(filePath, log):
     user_id, group_id = getUserAndGroup(host, port, user, group)
     error_files = {'no_take': [], 'error': []}
     if log:
-        outFile = open(os.path.join(r'D:\CZY\DataCollectionSoftware\log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
+        outFile = open(os.path.join(r'.\log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
     else:
         outFile = sys.stdout
 
@@ -217,7 +217,7 @@ def vaspRun(filePath, log):
             print(file, ' ', e, file=outFile)
             continue
     outFile.close()
-    with open(r'D:\CZY\DataCollectionSoftware\extractResult\task_json_' + user + '_' + group + '_' + s + '.json', 'w') as fp:
+    with open(r'.\extractResult\task_json_' + user + '_' + group + '_' + s + '.json', 'w') as fp:
         fp.write(json.dumps(error_files, indent=2))
         fp.close()
     print('Extraction Task Over!')
@@ -257,7 +257,7 @@ def cifFileParserRun(filePath, log):
         'error': []
     }
     if log:
-        outFile = open(r'D:\CZY\DataCollectionSoftware\log/' + database + '_' + user + '_' + group + '_' + s + '.txt', 'w', encoding='utf8')
+        outFile = open(os.path.join(r'.\log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
     else:
         outFile = sys.stdout
     file_list = os.listdir(filePath)
@@ -271,7 +271,7 @@ def cifFileParserRun(filePath, log):
             print(file, ' ', e, file=outFile)
             continue
 
-    with open(r'D:\CZY\DataCollectionSoftware\extractResult/task_json_' + user + '_' + group + '.json', 'w') as fp:
+    with open(r'.\extractResult/task_json_' + user + '_' + group + '.json', 'w') as fp:
         fp.write(json.dumps(error_files, indent=2))
         fp.close()
     print('Extraction Task Over!')
