@@ -8,7 +8,7 @@
 @Date       : 2023/9/6 8:56 
 @Description: 
 """
-from viewer.rootViewer import vaspRun, oqmdRun,findPaths
+from viewer.rootViewer import vaspRun, oqmdRun
 
 
 def VaspRunTest():
@@ -18,8 +18,5 @@ def VaspRunTest():
 
 
 if __name__ == '__main__':
-    # VaspRunTest()
+    VaspRunTest()
     # oqmdRun(True)
-    dirs = findPaths(r'E:\06_III_VCompounds\Intrinsic')
-    print(len(dirs))
-    print(dirs)

@@ -1,3 +1,4 @@
+import os
 import time
 
 from viewer.rootViewer import materialProjectRun, vaspRun, oqmdRun, cifFileParserRun

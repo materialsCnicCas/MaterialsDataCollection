@@ -63,7 +63,7 @@ def materialProjectRun(filePath, log):
     user_id, group_id = getUserAndGroup(host, port, user, group)
     error_files = {'no_take': [], 'error': []}
     if log:
-        outFile = open('./log/' + database + user + '_' + group + '_' + s + '.txt', 'w', encoding='utf8')
+        outFile = open(os.path.join(os.getcwd(), 'log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
     else:
         outFile = sys.stdout
 
@@ -89,7 +89,7 @@ def materialProjectRun(filePath, log):
             print(file, ' ', e, file=outFile)
             continue
 
-    with open('./extractResult/task_json_' + user + '_' + group + '.json', 'w') as fp:
+    with open(os.path.join(os.getcwd(), 'extractResult', 'task_json_' + user + '_' + group + '.json'), 'w') as fp:
         fp.write(json.dumps(error_files, indent=2))
         fp.close()
     print('Extraction Task Over!')
@@ -132,17 +132,18 @@ def oqmdRun(log):
     print('host & port：', host, ' ', port)
     user_id, group_id = getUserAndGroup(host, port, user, group)
     if log:
-        outFile = open(os.path.join(r'.\log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
+        outFile = open(os.path.join(os.getcwd(), 'log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
     else:
         outFile = sys.stdout
     error_ids = oqmdMain(database, collections, host, port, user_id, group_id, outFile)
-    with open(r'.\extractResult/task_json_' + user + '_' + group + '.json', 'w') as fp:
+    with open(os.path.join(os.getcwd(),'extractResult', 'task_json_' + user + '_' + group + '.json'), 'w') as fp:
         fp.write(json.dumps({'error_ids': error_ids}, indent=2))
         fp.close()
     print('Extraction Task Over!')
 
 
 def vaspRun(filePath, log):
+    print(os.getcwd())
     s = time.strftime("%Y-%m-%d_%H_%M_%S")
     print('Vasp files extraction task start ..........')
 
@@ -173,7 +174,7 @@ def vaspRun(filePath, log):
     group = input(f'please input source user group: (default: {user})')
     if group == '':
         group = user
-    file_list = os.listdir(filePath)
+    file_list = findPaths(filePath)
     print('Files Dir：', filePath)
     print('Files Number：', len(file_list))
     print('User：', user)
@@ -185,13 +186,14 @@ def vaspRun(filePath, log):
     user_id, group_id = getUserAndGroup(host, port, user, group)
     error_files = {'no_take': [], 'error': []}
     if log:
-        outFile = open(os.path.join(r'.\log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
+        outfile_path = os.path.join(os.getcwd(), 'log',  database + '_' + user + '_' + group + '_' + s + '.txt')
+        outFile = open(outfile_path, 'w', encoding='utf8')
     else:
         outFile = sys.stdout
-
+    limit = 1
     for file in tqdm(file_list, total=len(file_list)):
         try:
-            doc = vaspToBson(os.path.join(filePath, file), collections, user_id, group_id)
+            doc = vaspToBson(file, collections, user_id, group_id)
             if doc is None:
                 error_files['no_take'].append(file)
                 continue
@@ -217,7 +219,7 @@ def vaspRun(filePath, log):
             print(file, ' ', e, file=outFile)
             continue
     outFile.close()
-    with open(r'.\extractResult\task_json_' + user + '_' + group + '_' + s + '.json', 'w') as fp:
+    with open(os.path.join(os.getcwd(), 'extractResult', 'task_json_' + user + '_' + group + '_' + s + '.json'), 'w', encoding='utf8') as fp:
         fp.write(json.dumps(error_files, indent=2))
         fp.close()
     print('Extraction Task Over!')
@@ -257,7 +259,7 @@ def cifFileParserRun(filePath, log):
         'error': []
     }
     if log:
-        outFile = open(os.path.join(r'.\log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
+        outFile = open(os.path.join(os.getcwd(), 'log',  database + '_' + user + '_' + group + '_' + s + '.txt'), 'w', encoding='utf8')
     else:
         outFile = sys.stdout
     file_list = os.listdir(filePath)
@@ -271,7 +273,28 @@ def cifFileParserRun(filePath, log):
             print(file, ' ', e, file=outFile)
             continue
 
-    with open(r'.\extractResult/task_json_' + user + '_' + group + '.json', 'w') as fp:
+    with open(os.path.join(os.getcwd(), 'extractResult', 'task_json_' + user + '_' + group + '.json'), 'w') as fp:
         fp.write(json.dumps(error_files, indent=2))
         fp.close()
     print('Extraction Task Over!')
+
+def findPaths(rootPath):
+    total_path = []
+    file_list = os.listdir(rootPath)
+    if 'vasprun.xml' not in file_list:
+        for file in file_list:
+            if os.path.isdir(os.path.join(rootPath, file)):
+                paths = findPaths(os.path.join(rootPath, file))
+                for path in paths:
+                    total_path.append(path)
+    else:
+        total_path.append(rootPath)
+        for file in file_list:
+            if os.path.isdir(os.path.join(rootPath, file)):
+                paths = findPaths(os.path.join(rootPath, file))
+                for path in paths:
+                    total_path.append(path)
+    return total_path
+
+
+
